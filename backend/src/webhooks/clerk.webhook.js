@@ -5,6 +5,7 @@ import { verifyWebhook } from "@clerk/express/webhooks";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
+  console.log("Processing received webhook event");
   try {
     const signingSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
