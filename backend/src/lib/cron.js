@@ -3,7 +3,7 @@ import http from "node:http";
 import https from "node:https";
 
 // every 14 minutes send a GET request to the /health endpoint to keep the server awake
-const job = new CronJob(".* */14 * * *", function () {
+const job = new CronJob("0 */14 * * * *", function () {
   const base = process.env.FRONTEND_URL;
   if (!base) return;
   const url = new URL("/health", base).href;
