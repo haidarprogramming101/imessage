@@ -15,20 +15,8 @@ router.post("/", async (req, res) => {
         .json({ error: "Webhook signing secret is not provided" });
     }
 
-    // Convert the raw body into a string
-    const payload = Buffer.isBuffer(req.body)
-      ? req.body.toString("utf8")
-      : String(req.body);
-
-    // Create a Web Request
-    const request = new Request("http://internal/webhooks/clerk", {
-      method: "POST",
-      headers: new Headers(req.headers),
-      body: payload,
-    });
-
     // Verify the webhook signature
-    const evt = await verifyWebhook(request, signingSecret);
+    const evt = await verifyWebhook(req);
 
     if (evt.type === "user.created" || evt.type === "user.updated") {
       const user = evt.data;
@@ -36,7 +24,7 @@ router.post("/", async (req, res) => {
       const email =
         user.email_adresses?.find(
           (email) => email.id === user.primary_email_address_id,
-        )?.email_address ?? user.email.addresses?.[0]?.email_address;
+        )?.email_address ?? user.email_addresses?.[0]?.email_address;
 
       const fullName =
         [user.first_name, user.last_name].filter(Boolean).join(" ") ||
